@@ -16,15 +16,18 @@ It is available as a Docker image at https://hub.docker.com/r/jimmidyson/configm
 ### Usage
 
 ```
-Usage of ./out/configmap-reload:
-  -volume-dir string
-        the config map volume directory to watch for updates
+Usage: ./configmap-reload [options] volume-dir...
+
+ volume-dir...
+    	one or more directories to be watched
+
+ Options:
   -webhook-method string
-        the HTTP method url to use to send the webhook (default "POST")
+    	the HTTP method url to use to send the webhook (default "POST")
   -webhook-status-code int
-        the HTTP status code indicating successful triggering of reload (default 200)
+    	the HTTP status code indicating successful triggering of reload (default 200)
   -webhook-url string
-        the url to send a request to when the specified config map volume directory has been updated<Paste>
+    	the url to send a request to when the specified config map volume directory has been updated
 ```
 
 ### License
