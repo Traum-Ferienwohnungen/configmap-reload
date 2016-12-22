@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -10,15 +11,22 @@ import (
 	fsnotify "gopkg.in/fsnotify.v1"
 )
 
-var volumeDir = flag.String("volume-dir", "", "the config map volume directory to watch for updates")
 var webhook = flag.String("webhook-url", "", "the url to send a request to when the specified config map volume directory has been updated")
 var webhookMethod = flag.String("webhook-method", "POST", "the HTTP method url to use to send the webhook")
 var webhookStatusCode = flag.Int("webhook-status-code", 200, "the HTTP status code indicating successful triggering of reload")
 
 func main() {
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [options] volume-dir...\n\n"+
+			" volume-dir...\n"+
+			"    	one or more directories to be watched\n\n"+
+			" Options:\n",
+			os.Args[0])
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 
-	if *volumeDir == "" {
+	if flag.NArg() < 1 {
 		log.Println("Missing volume-dir")
 		log.Println()
 		flag.Usage()
@@ -69,9 +77,11 @@ func main() {
 		}
 	}()
 
-	err = watcher.Add(*volumeDir)
-	if err != nil {
-		log.Fatal(err)
+	for _, volumeDir := range flag.Args() {
+		err = watcher.Add(volumeDir)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	<-done
 }
